@@ -11,38 +11,33 @@ def questions():
     exponent1 = random.randint(1,9)
     exponent2 = random.randint(1,9)
     questiontype = random.choice(["product", "quotient", "power"])
+    def format_power(exp):
+        if exp == 1:
+            return "x"
+        else:
+            return "x^" + str(exp)
+
     if questiontype == "product":
         exponent3 = exponent1 + exponent2
-        if exponent1 > 1 and exponent2 > 1:
-            questiontext = "Solve x^" + str(exponent1) + " * x^" + str(exponent2)
-        elif exponent1 == 1 and exponent2 == 1:
-            questiontext = "SOlve x * x"
-        elif exponent1 == 1:
-            questiontext = "Solve x * x^" + str(exponent2)
-        elif exponent2 == 1:
-            questiontext = "Solve x^" + str(exponent1) + " * x"
-        correct_answer = "x^" + str(exponent3)
+        questiontext = "Solve " + format_power(exponent1) + " * " + format_power(exponent2)
+        correct_answer = format_power(exponent3)
+
     elif questiontype == "quotient":
         exponent3 = exponent1 - exponent2
-        if exponent1 > 1 and exponent2 > 1:
-            questiontext = "Solve x^" + str(exponent1) + " / x^" + str(exponent2)
-            correct_answer = "x^" + str(exponent3)
-        elif exponent1 == 1:
-            questiontext = "Solve x / x^" + str(exponent2)
-            correct_answer = "x^" + str(exponent3)
-        elif exponent2 == 1:
-            questiontext = "Solve x^" + str(exponent1) + " / x"
-            correct_answer = "x^" + str(exponent3)
-        else:
-            questiontext = "Solve x / x"
-        if exponent1 == exponent2:
+        questiontext = "Solve " + format_power(exponent1) + " / " + format_power(exponent2)
+
+        if exponent3 == 0:
             correct_answer = "1"
+        else:
+            correct_answer = format_power(exponent3)
+
     elif questiontype == "power":
         exponent1 = random.randint(2,10)
         exponent2 = random.randint(2,10)
         exponent3 = exponent1 * exponent2
-        questiontext = "Solve (x^" + str(exponent1) + ")^" + str(exponent2)
-        correct_answer = "x^" + str(exponent3)
+        
+        questiontext = "Solve (" + format_power(exponent1) + ")^" + str(exponent2)
+        correct_answer = format_power(exponent3)
 
     return questiontext, correct_answer
 
