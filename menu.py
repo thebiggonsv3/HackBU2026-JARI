@@ -10,15 +10,15 @@ width = int(info.current_w * (2/3))
 height = int(info.current_h * (2/3))
 screen = pg.display.set_mode((width, height), pg.RESIZABLE) 
 
-font = pg.font.SysFont("Arial", 12)
+font = pg.font.SysFont("Arial", 30)
 
 text1 = font.render(" START ", True, "white")
 text2 = font.render(" PLAY ", True, "white")
 text3 = font.render(" HELP ", True, "white")
 
-rect1 = text1.get_rect(topleft=(400, 300))
-rect2 = text2.get_rect(topleft=(100, 300))
-rect3 = text3.get_rect(topleft=(200, 300))
+rect1 = text1.get_rect(topleft=(width // 2 - text1.get_width() // 2, 250))
+rect2 = text2.get_rect(topleft=(width // 2 - text2.get_width() // 2, 300))
+rect3 = text3.get_rect(topleft=(width // 2 - text3.get_width() // 2, 350))
 
 bg = (127, 127, 127)
 msg = ""
