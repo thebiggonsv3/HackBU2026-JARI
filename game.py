@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+import ai
 
 
 # Board object which is the base class that all other board objects are based on
@@ -51,15 +52,28 @@ class Enemy(boardObj):
 
     # Basic AI for Enemy (moves towards player based on relative x and y position)
     def aiMove(self, mainCharacter, board):
-
-        if (mainCharacter.x < self.x) and  board[self.y][self.x-1] is None:
+        newboard = [[0 for a in range(10)] for b in range(10)]
+        for i, a in enumerate(board):
+            for p, b in a:
+                if isinstance(b, Character):
+                    newboard[i][p] = 1
+                elif isinstance(b, Obstacle):
+                    newboard[i][p] = 2
+                elif isinstance(b, Enemy):
+                    newboard[i][p] = 3
+        dx, dy = ai.ai(newboard)
+        if (dx != 0):
+            self.move(self.y, self.x+dx, board)
+        elif (dy != 0):
+            self.move(self.y+dy, self.x, board)
+        '''if (mainCharacter.x < self.x) and  board[self.y][self.x-1] is None:
             self.move(self.y, self.x-1, board)
         elif (mainCharacter.x > self.x) and  board[self.y][self.x+1] is None:
             self.move(self.y, self.x+1, board)
         elif (mainCharacter.y < self.y) and  board[self.y-1][self.x] is None:
             self.move(self.y-1, self.x, board)
         elif (mainCharacter.y > self.y) and  board[self.y+1][self.x] is None:
-            self.move(self.y+1, self.x, board)
+            self.move(self.y+1, self.x, board)'''
         
 
 
@@ -135,22 +149,22 @@ def gameLoop(screen, fps, fpsClock, data):
                 match event.key:
 
                     # Left arrow detection
-                    case pg.K_LEFT:
+                    case pg.K_LEFT | pg.K_a:
                         if mainCharacter.x > 0:
                             dx = -1
                     
                     # Right arrow detection
-                    case pg.K_RIGHT:
+                    case pg.K_RIGHT | pg.K_d:
                         if mainCharacter.x < 9:
                             dx = 1
 
                     # Up arrow detection
-                    case pg.K_UP:
+                    case pg.K_UP | pg.K_w:
                         if mainCharacter.y > 0:
                             dy = -1
 
                     # Down arrow detection
-                    case pg.K_DOWN:
+                    case pg.K_DOWN | pg.K_s:
                         if mainCharacter.y < 9:
                             dy = 1
                             
@@ -161,9 +175,7 @@ def gameLoop(screen, fps, fpsClock, data):
                         newboard = [row.copy() for row in board]
                         for a in newboard:
                             for b in a:
-                                print(a)
                                 if isinstance(b, Enemy):
-                                    #print(str(b.x) + " " + str(b.y))
                                     b.aiMove(mainCharacter, board)
             
 
