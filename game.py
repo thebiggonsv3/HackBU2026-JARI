@@ -23,6 +23,7 @@ class boardObj:
         self.x, self.y = x, y
         board[y][x] = self
 
+
 # Character class which inherits from the Board Object Class
 class Character(boardObj):
 
@@ -35,6 +36,7 @@ class Character(boardObj):
         charImage = pg.image.load("Assets/Man.png")
         charImage = pg.transform.scale(charImage, (scale,scale))
         screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
+
 
 # Enemy class which inherits from the Board Object Class
 class Enemy(boardObj):
@@ -105,7 +107,12 @@ def gameLoop(screen, fps, fpsClock):
     # Initializes boardObjects to the board
     mainCharacter = Character(0, 0)
     board[0][0] = mainCharacter
-    board[5][5] = Enemy(5, 5)
+
+    enemy = Enemy(5,5)
+    board[5][5] = enemy
+
+    enemies = [enemy]
+
     board[6][6] = Obstacle(6, 6)
 
     # main gameloop
@@ -152,11 +159,9 @@ def gameLoop(screen, fps, fpsClock):
                 if (dy != 0 or dx != 0):
                     if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
                         mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
-                        for a in board:
-                            for b in a:
-                                if isinstance(b, Enemy):
-                                    print("Enemy Moved")
-                                    b.aiMove(mainCharacter, board)
+
+                        for enemy in enemies:
+                            enemy.aiMove(mainCharacter, board)
             
 
         # Gets current height and width of the window and gets the standard scale for the board/grid
@@ -182,5 +187,7 @@ def gameLoop(screen, fps, fpsClock):
         fpsClock.tick(fps)
     pg.quit()
     sys.exit()
+
+
 if __name__ == "__main__":
     main()
