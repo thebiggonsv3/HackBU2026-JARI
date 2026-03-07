@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-import reused
+import reused, levels
 
 reused.init()
 
@@ -11,31 +11,32 @@ text1 = font.render(" START ", True, "black")
 text2 = font.render(" HELP ", True, "black")
 text3 = font.render(" QUIT ", True, "black")
 
-title_rect = title.get_rect(topleft=(reused.width // 2 - title.get_width() // 2, 150))
-rect1 = text1.get_rect(topleft=(reused.width // 2 - text1.get_width() // 2, 250))
-rect2 = text2.get_rect(topleft=(reused.width // 2 - text2.get_width() // 2, 300))
-rect3 = text3.get_rect(topleft=(reused.width // 2 - text3.get_width() // 2, 350))
+
 
 # Background color
 bg = (255, 255, 255)
-msg = ""
 
 running = True
 while running:
-
+    currentHeight = reused.screen.get_height()
+    currentWidth = reused.screen.get_width()
+    title_rect = title.get_rect(topleft=(currentWidth // 2 - title.get_width() // 2, ((currentHeight-200)/2)))
+    rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + 100))
+    rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + 150))
+    rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2) + 200))
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
 
         if event.type == pg.MOUSEBUTTONDOWN:
             if rect1.collidepoint(event.pos):
-                msg = "START Button was pressed"
+                levels.levelMenu(reused.fps, reused.fpsClock, reused.width, reused.height, reused.screen)
 
             if rect2.collidepoint(event.pos):
-                msg = "HELP Button was pressed"
+                pass
 
             if rect3.collidepoint(event.pos):
-                msg = "QUIT Button was pressed"
+                running = False
 
     reused.screen.fill(bg)
 
@@ -54,9 +55,6 @@ while running:
     reused.screen.blit(text3, rect3)
     pg.draw.rect(reused.screen, (255,0,0), rect3, 2)
 
-    img = font.render(msg, True, (0,0,255))
-    imgrect = img.get_rect(center=(reused.width//2, reused.height//2))
-    reused.screen.blit(img, imgrect)
 
     pg.display.flip()
     reused.fpsClock.tick(reused.fps)
