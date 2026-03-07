@@ -61,7 +61,7 @@ class Enemy(boardObj):
                     newboard[i][p] = 2
                 elif isinstance(b, Enemy):
                     newboard[i][p] = 3
-        dx, dy = ai.ai(newboard)
+        dx, dy = ai.ai(newboard, self.x, self.y)
         if (dx != 0):
             self.move(self.y, self.x+dx, board)
         elif (dy != 0):
