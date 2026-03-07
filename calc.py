@@ -8,12 +8,27 @@ font = pygame.font.SysFont(None, 40)
 playeranswer = ""
 
 def questions():
-    number1 = random.randint(1,20)
-    number2 = random.randint(1,20)
+    number1 = random.randint(1,10)
+    number2 = random.randint(1,10)
+    coefficient = number1 * number2
+    power = number2 - 1
 
-    questiontext = str(number1) + " * " + str(number2) + " = ?"
+    if number2 and number1 > 1:
+        questiontext = "Derive " + str(number1) + "x^" + str(number2)
+    elif number2 == 1 and number1 > 1:
+        questiontext = "Derive " + str(number1) + "x"
+    elif number1 == 1 and number2 > 1:
+        questiontext = "Derive x^" + str(number2)
+    else:
+        questiontext = "Derive x"
+    
+    if power > 1:
+        correct_answer = str(coefficient) + "x^" + str(power)
+    elif power == 1:
+        correct_answer = str(coefficient) + "x"
+    else:
+        correct_answer = str(coefficient)
 
-    correct_answer = number1 * number2
     return questiontext, correct_answer
 
 questiontext, correct_answer = questions()
@@ -33,7 +48,16 @@ while True:
             else:
                 for numbers in range (10):
                     if event.key == pygame.K_0 + numbers:
-                        playeranswer += str(numbers)
+                        if numbers == 6 and pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                            pass
+                        else:
+                            playeranswer += str(numbers)
+                
+                if event.key == pygame.K_x:
+                    playeranswer += "x"
+                
+                if event.key == pygame.K_6 and pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                    playeranswer += "^"
 
             
     screen.fill("black")
