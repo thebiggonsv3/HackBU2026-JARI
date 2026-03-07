@@ -6,10 +6,12 @@ reused.init()
 
 font = pg.font.SysFont("Arial", 30)
 
+title = font.render("GAME", True, "black")
 text1 = font.render(" START ", True, "black")
 text2 = font.render(" HELP ", True, "black")
 text3 = font.render(" QUIT ", True, "black")
 
+title_rect = title.get_rect(topleft=(reused.width // 2 - title.get_width() // 2, 150))
 rect1 = text1.get_rect(topleft=(reused.width // 2 - text1.get_width() // 2, 250))
 rect2 = text2.get_rect(topleft=(reused.width // 2 - text2.get_width() // 2, 300))
 rect3 = text3.get_rect(topleft=(reused.width // 2 - text3.get_width() // 2, 350))
@@ -36,6 +38,12 @@ while running:
                 msg = "QUIT Button was pressed"
 
     reused.screen.fill(bg)
+
+    # Prints the title
+    reused.screen.blit(title, title_rect)
+
+    # Prints the buttons
+    pg.draw.rect(reused.screen, (255,0,0), rect1, 2)
 
     reused.screen.blit(text1, rect1)
     pg.draw.rect(reused.screen, (255,0,0), rect1, 2)
