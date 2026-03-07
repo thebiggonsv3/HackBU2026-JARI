@@ -7,6 +7,8 @@ pg.init()
 fps = 60
 fpsClock = pg.time.Clock()
 
+screen = pg.display.set_mode((800, 600), pg.RESIZABLE)
+
 info = pg.display.Info()
 width = int(info.current_w * (2/3))
 height = int(info.current_h * (2/3))
@@ -20,11 +22,6 @@ text1 = font.render(" START ", True, "black")
 text2 = font.render(" HELP ", True, "black")
 text3 = font.render(" QUIT ", True, "black")
 
-
-
-# Background color
-bg = (255, 255, 255)
-
 running = True
 while running:
     currentHeight = screen.get_height()
@@ -33,6 +30,7 @@ while running:
     rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + 100))
     rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + 150))
     rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2) + 200))
+
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
@@ -47,14 +45,15 @@ while running:
             if rect3.collidepoint(event.pos):
                 running = False
 
-    screen.fill(bg)
+    screen.fill((255, 0, 0))
+    bg_img = pg.image.load("Assets/Menu.png")
+    bg_scaled = pg.transform.scale(bg_img, (currentWidth, currentHeight))
+    screen.blit(bg_scaled, (0, 0))
 
     # Prints the title
     screen.blit(title, title_rect)
 
     # Prints the buttons
-    pg.draw.rect(screen, (255,0,0), rect1, 2)
-
     screen.blit(text1, rect1)
     pg.draw.rect(screen, (255,0,0), rect1, 2)
 
@@ -63,7 +62,6 @@ while running:
 
     screen.blit(text3, rect3)
     pg.draw.rect(screen, (255,0,0), rect3, 2)
-
 
     pg.display.flip()
     fpsClock.tick(fps)

@@ -19,7 +19,8 @@ def levelMenu(fps, fpsClock, screen):
         rect3 = text3.get_rect(center=(((currentWidth // 2)+text2.get_width()), (currentHeight-50)/2))
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                running = False
+                pg.quit()
+                sys.exit()
 
             if event.type == pg.MOUSEBUTTONDOWN:
                 if rect1.collidepoint(event.pos):
@@ -49,5 +50,4 @@ def levelMenu(fps, fpsClock, screen):
         pg.display.flip()
         fpsClock.tick(fps)
 
-    pg.quit()
-    sys.exit()
+    return
