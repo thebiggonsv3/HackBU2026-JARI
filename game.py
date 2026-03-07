@@ -16,7 +16,14 @@ class Character(boardObj):
     def __init__(self, x, y, name):
         super().__init__(x, y, name)
     def draw(self, screen, currentWidth, currentHeight, scale):
-        charImage = pg.image.load("test.png")
+        charImage = pg.image.load("Assets/Man.png")
+        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
+
+class Enemy(boardObj):
+    def __init__(self, x, y, name):
+        super().__init__(x, y, name)
+    def draw(self, screen, currentWidth, currentHeight, scale):
+        charImage = pg.image.load("Assets/test.png")
         screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
 
 
