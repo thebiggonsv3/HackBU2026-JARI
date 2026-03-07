@@ -1,8 +1,17 @@
 import pygame as pg
 import sys
-import reused, levels
+from levels import levelMenu
 
-reused.init()
+pg.init()
+
+fps = 60
+fpsClock = pg.time.Clock()
+
+info = pg.display.Info()
+width = int(info.current_w * (2/3))
+height = int(info.current_h * (2/3))
+
+screen = pg.display.set_mode((width, height), pg.RESIZABLE)
 
 font = pg.font.SysFont("Arial", 30)
 
@@ -18,8 +27,8 @@ bg = (255, 255, 255)
 
 running = True
 while running:
-    currentHeight = reused.screen.get_height()
-    currentWidth = reused.screen.get_width()
+    currentHeight = screen.get_height()
+    currentWidth = screen.get_width()
     title_rect = title.get_rect(topleft=(currentWidth // 2 - title.get_width() // 2, ((currentHeight-200)/2)))
     rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + 100))
     rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + 150))
@@ -30,7 +39,7 @@ while running:
 
         if event.type == pg.MOUSEBUTTONDOWN:
             if rect1.collidepoint(event.pos):
-                levels.levelMenu(reused.fps, reused.fpsClock, reused.width, reused.height, reused.screen)
+                levelMenu(fps, fpsClock, width, height, screen)
 
             if rect2.collidepoint(event.pos):
                 pass
@@ -38,26 +47,26 @@ while running:
             if rect3.collidepoint(event.pos):
                 running = False
 
-    reused.screen.fill(bg)
+    screen.fill(bg)
 
     # Prints the title
-    reused.screen.blit(title, title_rect)
+    screen.blit(title, title_rect)
 
     # Prints the buttons
-    pg.draw.rect(reused.screen, (255,0,0), rect1, 2)
+    pg.draw.rect(screen, (255,0,0), rect1, 2)
 
-    reused.screen.blit(text1, rect1)
-    pg.draw.rect(reused.screen, (255,0,0), rect1, 2)
+    screen.blit(text1, rect1)
+    pg.draw.rect(screen, (255,0,0), rect1, 2)
 
-    reused.screen.blit(text2, rect2)
-    pg.draw.rect(reused.screen, (255,0,0), rect2, 2)
+    screen.blit(text2, rect2)
+    pg.draw.rect(screen, (255,0,0), rect2, 2)
 
-    reused.screen.blit(text3, rect3)
-    pg.draw.rect(reused.screen, (255,0,0), rect3, 2)
+    screen.blit(text3, rect3)
+    pg.draw.rect(screen, (255,0,0), rect3, 2)
 
 
     pg.display.flip()
-    reused.fpsClock.tick(reused.fps)
+    fpsClock.tick(fps)
 
 pg.quit()
 sys.exit()
