@@ -1,89 +1,60 @@
-import pygame as pg
+import pygame
 
-class boardObj:
-    def __init__(self, x, y, name):
-        self.x = x
-        self.y = y
-        self.name = name
-    def calculateScreenPos(self, currentWidth, currentHeight, scale):
-        xpos = (scale*self.x)+((currentWidth-(scale*10)) / 2)
-        ypos = (scale*self.y)+((currentHeight-(scale*10))/2)
-        return (xpos, ypos)
-    def draw(screen, currentWidth, currentHeight, scale):
-        pass
+pygame.init()
+import random
+screen = pygame.display.set_mode((800, 600))
+font = pygame.font.SysFont(None, 45)
 
-class Character(boardObj):
-    def __init__(self, x, y, name):
-        super().__init__(x, y, name)
-    def draw(self, screen, currentWidth, currentHeight, scale):
-        charImage = pg.image.load("Assets/Man.png")
-        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
-
-class Enemy(boardObj):
-    def __init__(self, x, y, name):
-        super().__init__(x, y, name)
-    def draw(self, screen, currentWidth, currentHeight, scale):
-        charImage = pg.image.load("Assets/evil-test.png")
-        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
+playeranswer = ""
 
 
-def main():
+def questions():
+    number1 = random.randint(1,15)
+    number2 = random.randint(1,15)
 
+    symbols = [ '+', '-', '*', '÷']
+    randomymbol = random.choice(symbols)
 
-    pg.init()
+    if randomymbol == '+':
+        correct_answer = number1 + number2
+    elif randomymbol == '-':
+        correct_answer = number1 - number2
+    elif randomymbol == '*':
+        correct_answer = number1 * number2
 
-    fps = 60
-    fpsClock = pg.time.Clock()
-    info = pg.display.Info()
-    width = int(info.current_w * (2/3))
-    height = int(info.current_h * (2/3))
+    questiontext = str(number1) + randomymbol + str(number2) + " = ?"
 
-    screen = pg.display.set_mode((width, height), pg.RESIZABLE)
-    gameLoop(screen, fps, fpsClock)
+    return questiontext, correct_answer
+questiontext, correct_answer = questions()
 
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
 
-def gameLoop(screen, fps, fpsClock):
-    framecount = 0
-    font=pg.font.Font(None,20)
-     
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                if playeranswer == str(correct_answer):
+                    questiontext, correct_answer = questions()
+                playeranswer = ""
+            elif event.key == pygame.K_BACKSPACE:
+                playeranswer = playeranswer [:-1]
+            elif event.key == pygame.K_SLASH:
+                playeranswer += "/"
+            else:
+                for numbers in range (10):
+                    if event.key == pygame.K_0 + numbers:
+                        playeranswer += str(numbers)
 
-    mainCharacter = Character(0, 0, "test")
-    boardObjs = [mainCharacter]
-    boardObjs.append(Enemy(5, 5, "test2"))
-    while True:
-        framecount += 1
-        screen.fill((0, 0, 0))
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
-            if event.type == pg.KEYDOWN:
-                match event.key:
-                    case pg.K_LEFT:
-                        if mainCharacter.x > 0:
-                            mainCharacter.x -= 1
-                    case pg.K_RIGHT:
-                        if mainCharacter.x < 9:
-                            mainCharacter.x += 1
-                    case pg.K_DOWN:
-                        if mainCharacter.y < 9:
-                            mainCharacter.y += 1
-                    case pg.K_UP:
-                        if mainCharacter.y > 0:
-                            mainCharacter.y -= 1
             
-        currentHeight = screen.get_height()
-        currentWidth = screen.get_width()
-        scale = screen.get_height() / 12
-        for i in range(11):
-            pg.draw.line(screen, (255, 255, 255), ((scale*i)+((currentWidth-(scale*10)) / 2), ((currentHeight-(scale*10))/2)), ((scale*i)+((currentWidth-(scale*10)) / 2), (scale*10) + ((currentHeight-(scale*10))/2)))
-            pg.draw.line(screen, (255, 255, 255), (((currentWidth-(scale*10)) / 2), (scale*i)+((currentHeight-(scale*10))/2)), ((scale*10)+((currentWidth-(scale*10)) / 2), (scale*i) + ((currentHeight-(scale*10))/2)))
-                
-        for objs in boardObjs:
-            objs.draw(screen, currentWidth, currentHeight, scale)
+    screen.fill("black")
+    text_image = font.render(questiontext, True, "white")
+    screen.blit(text_image,(600,250))
+    
+    questiontitle = "Question:"
+    questiontitle_image = font.render(questiontitle, True, "White")
+    screen.blit(questiontitle_image,(600,180))
 
-        screen.blit(font.render(str(framecount),True,(255, 255, 255)),(0, 0))
-        pg.display.flip()
-        fpsClock.tick(fps)
-
-if __name__ == "__main__":
-    main()
+    answer_image = font.render(playeranswer, True, "Blue")
+    screen.blit(answer_image,(630, 300))
+    pygame.display.flip()
