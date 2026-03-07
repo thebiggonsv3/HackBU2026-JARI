@@ -27,6 +27,7 @@ while running:
     currentHeight = screen.get_height()
     currentWidth = screen.get_width()
     title_rect = title.get_rect(topleft=(currentWidth // 2 - title.get_width() // 2, ((currentHeight-200)/2)))
+    # Sets buttons to be in the middle of the screen
     rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + 100))
     rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + 150))
     rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2) + 200))

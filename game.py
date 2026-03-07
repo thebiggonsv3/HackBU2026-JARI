@@ -147,7 +147,7 @@ def gameLoop(screen, fps, fpsClock):
                     case pg.K_DOWN:
                         if mainCharacter.y < 9:
                             dy = 1
-                            
+                        
                 # Functionality based on arrow movement
                 if (dy != 0 or dx != 0):
                     if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
@@ -155,6 +155,7 @@ def gameLoop(screen, fps, fpsClock):
                         for a in board:
                             for b in a:
                                 if isinstance(b, Enemy):
+                                    print("Enemy Moved")
                                     b.aiMove(mainCharacter, board)
             
 
