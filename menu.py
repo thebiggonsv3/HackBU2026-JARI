@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-from levels import levelMenu
+import levels
 
 pg.init()
 
@@ -13,9 +13,9 @@ height = int(info.current_h * (2/3))
 
 screen = pg.display.set_mode((width, height), pg.RESIZABLE)
 
-
 running = True
 hover = 0
+
 while running:
     currentHeight = screen.get_height()
     currentWidth = screen.get_width()
@@ -24,16 +24,15 @@ while running:
     text1 = font.render(" START ", True, "black")
     text2 = font.render(" HELP ", True, "black")
     text3 = font.render(" QUIT ", True, "black")
-    
-    # Sets buttons to be in the middle of the screen
-    rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 1.8))
-    rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 3.6))
-    rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 5.4))
 
+    rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 1.8))
+    rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 3.6))
+    rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 5.4))
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+
         if event.type == pg.MOUSEMOTION:
             if rect1.collidepoint(event.pos):
                 hover = 1
@@ -43,6 +42,7 @@ while running:
                 hover = 3
             else:
                 hover = 0
+
         if event.type == pg.MOUSEBUTTONDOWN:
             if rect1.collidepoint(event.pos):
                 hover = 4
@@ -53,7 +53,7 @@ while running:
 
         if event.type == pg.MOUSEBUTTONUP:
             if rect1.collidepoint(event.pos):
-                levelMenu(fps, fpsClock, screen)
+                levels.levelMenu(fps, fpsClock, screen)
 
             if rect2.collidepoint(event.pos):
                 pass
@@ -66,8 +66,6 @@ while running:
     bg_scaled = pg.transform.scale(bg_img, (currentWidth, currentHeight))
     screen.blit(bg_scaled, (0, 0))
 
-
-    # Prints the buttons
     if hover == 1:
         pg.draw.rect(screen, (67,67,67,67), rect1, 0, 10)
     if hover == 4:
