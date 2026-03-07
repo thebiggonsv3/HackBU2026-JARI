@@ -7,36 +7,51 @@ pg.init()
 fps = 60
 fpsClock = pg.time.Clock()
 
-screen = pg.display.set_mode((800, 600), pg.RESIZABLE)
-
 info = pg.display.Info()
 width = int(info.current_w * (2/3))
 height = int(info.current_h * (2/3))
 
 screen = pg.display.set_mode((width, height), pg.RESIZABLE)
 
-font = pg.font.SysFont("Arial", 30)
-
-title = font.render("GAME", True, "black")
-text1 = font.render(" START ", True, "black")
-text2 = font.render(" HELP ", True, "black")
-text3 = font.render(" QUIT ", True, "black")
 
 running = True
+hover = 0
 while running:
     currentHeight = screen.get_height()
     currentWidth = screen.get_width()
-    title_rect = title.get_rect(topleft=(currentWidth // 2 - title.get_width() // 2, ((currentHeight-200)/2)))
+
+    font = pg.font.SysFont("Arial", int(currentHeight/20))
+    text1 = font.render(" START ", True, "black")
+    text2 = font.render(" HELP ", True, "black")
+    text3 = font.render(" QUIT ", True, "black")
+    
     # Sets buttons to be in the middle of the screen
-    rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + 100))
-    rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + 150))
-    rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2) + 200))
+    rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 1.8))
+    rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 3.6))
+    rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 5.4))
+
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-
+        if event.type == pg.MOUSEMOTION:
+            if rect1.collidepoint(event.pos):
+                hover = 1
+            elif rect2.collidepoint(event.pos):
+                hover = 2
+            elif rect3.collidepoint(event.pos):
+                hover = 3
+            else:
+                hover = 0
         if event.type == pg.MOUSEBUTTONDOWN:
+            if rect1.collidepoint(event.pos):
+                hover = 4
+            elif rect2.collidepoint(event.pos):
+                hover = 5
+            elif rect3.collidepoint(event.pos):
+                hover = 6
+
+        if event.type == pg.MOUSEBUTTONUP:
             if rect1.collidepoint(event.pos):
                 levelMenu(fps, fpsClock, screen)
 
@@ -51,18 +66,28 @@ while running:
     bg_scaled = pg.transform.scale(bg_img, (currentWidth, currentHeight))
     screen.blit(bg_scaled, (0, 0))
 
-    # Prints the title
-    screen.blit(title, title_rect)
 
     # Prints the buttons
+    if hover == 1:
+        pg.draw.rect(screen, (67,67,67,67), rect1, 0, 10)
+    if hover == 4:
+        pg.draw.rect(screen, (45,45,45,45), rect1, 0, 10)
+    pg.draw.rect(screen, (255,0,0), rect1, 2, 10)
     screen.blit(text1, rect1)
-    pg.draw.rect(screen, (255,0,0), rect1, 2)
 
+    if hover == 2:
+        pg.draw.rect(screen, (67,67,67,67), rect2, 0, 10)
+    if hover == 5:
+        pg.draw.rect(screen, (45,45,45,45), rect2, 0, 10)
     screen.blit(text2, rect2)
-    pg.draw.rect(screen, (255,0,0), rect2, 2)
+    pg.draw.rect(screen, (255,0,0), rect2, 2, 10)
 
+    if hover == 3:
+        pg.draw.rect(screen, (67,67,67,67), rect3, 0, 10)
+    if hover == 6:
+        pg.draw.rect(screen, (45,45,45,45), rect3, 0, 10)
     screen.blit(text3, rect3)
-    pg.draw.rect(screen, (255,0,0), rect3, 2)
+    pg.draw.rect(screen, (255,0,0), rect3, 2, 10)
 
     pg.display.flip()
     fpsClock.tick(fps)
