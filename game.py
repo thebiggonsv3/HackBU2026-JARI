@@ -23,7 +23,7 @@ class Enemy(boardObj):
     def __init__(self, x, y, name):
         super().__init__(x, y, name)
     def draw(self, screen, currentWidth, currentHeight, scale):
-        charImage = pg.image.load("Assets/test.png")
+        charImage = pg.image.load("Assets/evil-test.png")
         screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
 
 
@@ -49,6 +49,7 @@ def gameLoop(screen, fps, fpsClock):
 
     mainCharacter = Character(0, 0, "test")
     boardObjs = [mainCharacter]
+    boardObjs.append(Enemy(5, 5, "test2"))
     while True:
         framecount += 1
         screen.fill((0, 0, 0))
