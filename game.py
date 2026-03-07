@@ -23,7 +23,6 @@ class boardObj:
         self.x, self.y = x, y
         board[y][x] = self
 
-
 # Character class which inherits from the Board Object Class
 class Character(boardObj):
 
@@ -37,7 +36,6 @@ class Character(boardObj):
         charImage = pg.transform.scale(charImage, (scale,scale))
         screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
 
-
 # Enemy class which inherits from the Board Object Class
 class Enemy(boardObj):
 
@@ -47,12 +45,13 @@ class Enemy(boardObj):
 
     # Draws Enemy to screen using an image
     def draw(self, screen, currentWidth, currentHeight, scale):
-        charImage = pg.image.load("Assets/evil-man.png")
+        charImage = pg.image.load("Assets/evil-test.png")
         charImage = pg.transform.scale(charImage, (scale,scale))
         screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
 
     # Basic AI for Enemy (moves towards player based on relative x and y position)
     def aiMove(self, mainCharacter, board):
+
         if (mainCharacter.x < self.x) and  board[self.y][self.x-1] is None:
             self.move(self.y, self.x-1, board)
         elif (mainCharacter.x > self.x) and  board[self.y][self.x+1] is None:
@@ -93,27 +92,27 @@ def main():
     gameLoop(screen, fps, fpsClock)
 
 
+def loadlevel(data):
+    board = [[None for a in range(10)] for b in range(10)]
+
+    for obj in data:
+        board[obj.y][obj.x] = obj
+
+    return board
+
+    
 
 # Game function 
-def gameLoop(screen, fps, fpsClock):
+def gameLoop(screen, fps, fpsClock, data):
 
     # Variable initialization
     framecount = 0
     font=pg.font.Font(None,20)
 
-    # Creates an empty board full of None variables
-    board = [[None for a in range(10)] for b in range(10)]
+    board = loadlevel(data)
 
     # Initializes boardObjects to the board
-    mainCharacter = Character(0, 0)
-    board[0][0] = mainCharacter
-
-    enemy = Enemy(5,5)
-    board[5][5] = enemy
-
-    enemies = [enemy]
-
-    board[6][6] = Obstacle(6, 6)
+    mainCharacter = data[0]
 
     # main gameloop
     running = True
@@ -154,14 +153,18 @@ def gameLoop(screen, fps, fpsClock):
                     case pg.K_DOWN:
                         if mainCharacter.y < 9:
                             dy = 1
-                        
+                            
                 # Functionality based on arrow movement
                 if (dy != 0 or dx != 0):
                     if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
                         mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
-
-                        for enemy in enemies:
-                            enemy.aiMove(mainCharacter, board)
+                        newboard = [row.copy() for row in board]
+                        for a in newboard:
+                            for b in a:
+                                print(a)
+                                if isinstance(b, Enemy):
+                                    #print(str(b.x) + " " + str(b.y))
+                                    b.aiMove(mainCharacter, board)
             
 
         # Gets current height and width of the window and gets the standard scale for the board/grid
@@ -187,7 +190,5 @@ def gameLoop(screen, fps, fpsClock):
         fpsClock.tick(fps)
     pg.quit()
     sys.exit()
-
-
 if __name__ == "__main__":
     main()
