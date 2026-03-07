@@ -52,15 +52,18 @@ def levelMenu(fps, fpsClock, screen):
             if event.type == pg.MOUSEBUTTONUP:
 
                 if rect1.collidepoint(event.pos):
-                    game.main()
+                    data = [game.Character(5, 5), game.Enemy(9, 9)]
+                    game.gameLoop(screen, fps, fpsClock, data)
 
-                if rect2.collidepoint(event.pos):
-                    game.main()
+                elif rect2.collidepoint(event.pos):
+                    data = [game.Character(5, 5), game.Enemy(9, 9), game.Enemy(0, 0)]
+                    game.gameLoop(screen, fps, fpsClock, data)
 
-                if rect3.collidepoint(event.pos):
-                    game.main()
+                elif rect3.collidepoint(event.pos):
+                    data = [game.Character(5, 5), game.Enemy(9, 9), game.Enemy(0, 0), game.Enemy(0, 9), game.Obstacle(4, 4)]
+                    game.gameLoop(screen, fps, fpsClock, data)
 
-                if rect4.collidepoint(event.pos):
+                elif rect4.collidepoint(event.pos):
                     running = False
 
         screen.fill((255, 0, 0))
