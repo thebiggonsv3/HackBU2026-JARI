@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 
-def levelMenu(fps, fpsClock, width, height, screen):
+def levelMenu(fps, fpsClock, screen):
     font = pg.font.SysFont("Arial", 30)
 
     text1 = font.render(" EASY ", True, "white")
@@ -43,7 +43,7 @@ def levelMenu(fps, fpsClock, width, height, screen):
         pg.draw.rect(screen, (255,0,0), rect3, 2)
 
         img = font.render(msg, True, (0,0,255))
-        imgrect = img.get_rect(center=(width//2, height//2))
+        imgrect = img.get_rect(center=(currentWidth//2, currentHeight//2))
         screen.blit(img, imgrect)
 
         pg.display.flip()

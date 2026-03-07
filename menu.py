@@ -39,7 +39,7 @@ while running:
 
         if event.type == pg.MOUSEBUTTONDOWN:
             if rect1.collidepoint(event.pos):
-                levelMenu(fps, fpsClock, width, height, screen)
+                levelMenu(fps, fpsClock, screen)
 
             if rect2.collidepoint(event.pos):
                 pass
