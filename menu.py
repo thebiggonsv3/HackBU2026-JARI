@@ -1,7 +1,8 @@
 import pygame as pg
+import sys
 import reused
 
-screen, fpsClock, fps, width, height = reused.init()
+reused.init()
 
 font = pg.font.SysFont("Arial", 30)
 
