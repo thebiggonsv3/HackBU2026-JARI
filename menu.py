@@ -3,21 +3,22 @@ import sys
 
 pg.init()
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+fps = 60
+fpsClock = pg.time.Clock()
+info = pg.display.Info()
+width = int(info.current_w * (2/3))
+height = int(info.current_h * (2/3))
+screen = pg.display.set_mode((width, height), pg.RESIZABLE) 
 
-screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pg.display.set_caption("GAME")
-
-font = pg.font.SysFont("Arial", 14)
+font = pg.font.SysFont("Arial", 12)
 
 text1 = font.render(" START ", True, "white")
 text2 = font.render(" PLAY ", True, "white")
-text3 = font.render(" STOP ", True, "white")
+text3 = font.render(" HELP ", True, "white")
 
-rect1 = text1.get_rect(topleft=(10, 10))
-rect2 = text2.get_rect(topleft=(100, 10))
-rect3 = text3.get_rect(topleft=(200, 10))
+rect1 = text1.get_rect(topleft=(400, 300))
+rect2 = text2.get_rect(topleft=(100, 300))
+rect3 = text3.get_rect(topleft=(200, 300))
 
 bg = (127, 127, 127)
 msg = ""
@@ -37,7 +38,7 @@ while running:
                 msg = "PLAY Button was pressed"
 
             if rect3.collidepoint(event.pos):
-                msg = "STOP Button was pressed"
+                msg = "HELP Button was pressed"
 
     screen.fill(bg)
 
@@ -51,10 +52,11 @@ while running:
     pg.draw.rect(screen, (255,0,0), rect3, 2)
 
     img = font.render(msg, True, (0,0,255))
-    imgrect = img.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+    imgrect = img.get_rect(center=(width//2, height//2))
     screen.blit(img, imgrect)
 
-    pg.display.update()
+    pg.display.flip()
+    fpsClock.tick(fps)
 
 pg.quit()
 sys.exit()
