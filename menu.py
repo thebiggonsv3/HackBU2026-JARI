@@ -22,7 +22,7 @@ def main():
         currentHeight = screen.get_height()
         currentWidth = screen.get_width()
 
-        font = pg.font.SysFont("Arial", int(currentHeight/20))
+        font = pg.font.Font("Assets/8_bit_maddness.ttf", int(currentHeight/20))
         text1 = font.render(" START ", True, "black")
         text2 = font.render(" HELP ", True, "black")
         text3 = font.render(" QUIT ", True, "black")
@@ -31,7 +31,6 @@ def main():
         rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 1.8))
         rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 3.6))
         rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 5.4))
-
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -95,5 +94,6 @@ def main():
 
     pg.quit()
     sys.exit()
+
 if __name__ == "__main__":
     main()

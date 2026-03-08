@@ -11,7 +11,7 @@ def levelMenu(fps, fpsClock, screen):
         currentHeight = screen.get_height()
         currentWidth = screen.get_width()
 
-        font = pg.font.SysFont("Arial", int(currentHeight/20))
+        font = pg.font.SysFont("Assets/8_bit_maddness.ttf", int(currentHeight/20))
         text1 = font.render(" Easy ", True, "black")
         text2 = font.render(" Medium ", True, "black")
         text3 = font.render(" Hard ", True, "black")

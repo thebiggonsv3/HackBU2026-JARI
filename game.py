@@ -221,7 +221,7 @@ def done(wincon, screen, fps, fpsClock, data, size):
             currentHeight = screen.get_height()
             currentWidth = screen.get_width()
 
-            font = pg.font.SysFont("Arial", int(currentHeight/20))
+            font = pg.font.SysFont("Assets/8_bit_maddness.ttf", int(currentHeight/20))
             if (wincon == 1):
                 text1 = font.render(" Retry? ", True, "white")
             else:
