@@ -3,6 +3,10 @@ Simple Math Game
 HackBU 2026 Submission 
 Created by Ian Porto, Ryan Zhang, Alston Zhang, and Jason Seng
 
+IMPORTANT
+----------------------------------------------------------------
+THE PROGRAM MUST BE RUN FROM MENU.PY. STARTING FROM ANY OTHER FILE WILL CAUSE AN ERROR TO OCCUR
+
 Program Purpose
 ----------------------------------------------------------------
 The purpose of our program is to create an engaging way to practice math problems, mainly algebra and calculus. 
