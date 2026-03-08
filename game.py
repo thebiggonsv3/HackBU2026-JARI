@@ -2,7 +2,7 @@ import pygame as pg
 import sys
 import ai
 import copy
-
+import math_q
 
 class boardObj:
 
@@ -112,6 +112,13 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
     framecount = 0
     font = pg.font.Font(None,20)
 
+    question_active = False
+    player_answer = ""
+    question_text = ""
+    correct_answer = ""
+    pending_move = (0,0)
+    level = 1
+
     board = loadlevel(data, size)
 
     mainCharacter = data[0]
@@ -130,41 +137,68 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                 running = False
 
             if event.type == pg.KEYDOWN:
+                if question_active:
+                        if event.key == pg.K_RETURN:
+                            if player_answer == str(correct_answer):
+                                dx, dy = pending_move
+                                mainCharacter.move(mainCharacter.y + dy, mainCharacter.x + dx, board)
+                                question_active = False
+                                player_answer = ""
+                        elif event.key == pg.K_BACKSPACE:
+                                player_answer = player_answer [:-1]
+                        else:
+                                for numbers in range (10):
+                                    if event.key == pg.K_0 + numbers:
+                                        if numbers == 6 and pg.key.get_mods() & pg.KMOD_SHIFT:
+                                            pass
+                                        else:
+                                            player_answer += str(numbers)
+                                if event.key == pg.K_x:
+                                    player_answer += "x"
+                
+                                if event.key == pg.K_6 and pg.key.get_mods() & pg.KMOD_SHIFT:
+                                    player_answer += "^"
+                                
+                                if event.key == pg.K_MINUS:
+                                    player_answer += "-"
+                else:
+                    dx = 0
+                    dy = 0
 
-                dx = 0
-                dy = 0
+                    match event.key:
 
-                match event.key:
+                        case pg.K_LEFT | pg.K_a:
+                            if mainCharacter.x > 0:
+                                dx = -1
 
-                    case pg.K_LEFT | pg.K_a:
-                        if mainCharacter.x > 0:
-                            dx = -1
+                        case pg.K_RIGHT | pg.K_d:
+                            if mainCharacter.x < size-1:
+                                dx = 1
+
+                        case pg.K_UP | pg.K_w:
+                            if mainCharacter.y > 0:
+                                dy = -1
+
+                        case pg.K_DOWN | pg.K_s:
+                            if mainCharacter.y < size-1:
+                                dy = 1
+
+                        case pg.K_ESCAPE | pg.K_DELETE:
+                            running = False
+
+                    if (dy or dx):
+
+                        if isinstance(board[mainCharacter.y+dy][mainCharacter.x+dx], Finish):
+                            wincon = 2
+                            running = False
+
+                        if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
+                            question_text, correct_answer = math_q.questions1()
+                        
+                            pending_move = (dx, dy)
+                            player_answer = ""
+                            question_active = True
                     
-                    case pg.K_RIGHT | pg.K_d:
-                        if mainCharacter.x < size-1:
-                            dx = 1
-
-                    case pg.K_UP | pg.K_w:
-                        if mainCharacter.y > 0:
-                            dy = -1
-
-                    case pg.K_DOWN | pg.K_s:
-                        if mainCharacter.y < size-1:
-                            dy = 1
-
-                    case pg.K_ESCAPE | pg.K_DELETE:
-                        running = False
-
-                if (dy or dx):
-
-                    if isinstance(board[mainCharacter.y+dy][mainCharacter.x+dx], Finish):
-                        wincon = 2
-                        running = False
-
-                    if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
-
-                        mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
-
                         newboard = [row.copy() for row in board]
 
                         for a in newboard:
@@ -198,6 +232,16 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
 
         screen.blit(font.render(str(framecount),True,(255,255,255)),(0,0))
 
+        if question_active:
+            q_font= pg.font.Font(None, int(currentHeight * 0.07))
+            a_font = pg.font.Font(None, int(currentHeight * 0.06))
+
+            q_surface = q_font.render(question_text, True, (255,255,255))
+            screen.blit(q_surface,(80,40))
+
+            a_surface = a_font.render(player_answer, True, (0,200,255))
+            screen.blit(a_surface,(80,80))
+        
         pg.display.flip()
         fpsClock.tick(fps)
 
@@ -265,6 +309,7 @@ def done(wincon,screen,fps,fpsClock,data,size):
 
                     elif rect2.collidepoint(event.pos):
                         running2 = False
+                        
 
 
             screen.fill((255,0,0))
@@ -299,5 +344,6 @@ def done(wincon,screen,fps,fpsClock,data,size):
 
             screen.blit(text2,rect2)
 
+                
             pg.display.flip()
             fpsClock.tick(fps)
