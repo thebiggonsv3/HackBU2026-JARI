@@ -117,6 +117,7 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
     question_text = ""
     correct_answer = ""
     pending_move = (0,0)
+    player_score = 0
     level = 1
 
     board = loadlevel(data, size)
@@ -144,6 +145,10 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                                 mainCharacter.move(mainCharacter.y + dy, mainCharacter.x + dx, board)
                                 question_active = False
                                 player_answer = ""
+                                player_score += 1
+                                if player_score == 5:
+                                    level += 1
+                                    player_score = 0
                         elif event.key == pg.K_BACKSPACE:
                                 player_answer = player_answer [:-1]
                         else:
@@ -193,8 +198,12 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                             running = False
 
                         if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
-                            question_text, correct_answer = math_q.questions1()
-                        
+                            if level == 1:
+                                question_text, correct_answer = math_q.questions1()
+                            elif level == 2:
+                                question_text, correct_answer = math_q.questions2()
+                            else:
+                                question_text, correct_answer = math_q.questions3()
                             pending_move = (dx, dy)
                             player_answer = ""
                             question_active = True
@@ -237,10 +246,10 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
             a_font = pg.font.Font(None, int(currentHeight * 0.06))
 
             q_surface = q_font.render(question_text, True, (255,255,255))
-            screen.blit(q_surface,(80,40))
+            screen.blit(q_surface,(40,40))
 
             a_surface = a_font.render(player_answer, True, (0,200,255))
-            screen.blit(a_surface,(80,80))
+            screen.blit(a_surface,(40,80))
         
         pg.display.flip()
         fpsClock.tick(fps)
