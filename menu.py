@@ -93,14 +93,12 @@ def main():
         bg_scaled = pg.transform.scale(bg_img, (currentWidth, currentHeight))
         screen.blit(bg_scaled, (0, 0))
 
-        # ---- Draw semi-transparent menu box ----
         menu_surface = pg.Surface((menu_rect.width, menu_rect.height), pg.SRCALPHA)
         pg.draw.rect(menu_surface, (0, 0, 0, 140),
                      (0, 0, menu_rect.width, menu_rect.height),
                      border_radius=20)
         screen.blit(menu_surface, menu_rect.topleft)
 
-        # ---- Draw buttons ----
 
         if hover == 1:
             pg.draw.rect(screen, (67,67,67), rect1, 0, 10)
