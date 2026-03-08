@@ -60,12 +60,23 @@ class Enemy(boardObj):
                     newboard[i][p] = 2
                 elif isinstance(b, Enemy):
                     newboard[i][p] = 3
+                elif isinstance(b, Finish):
+                    newboard[i][p] = 4
         dx, dy = ai.ai(newboard, self.x, self.y)
         if (dx != 0):
             self.move(self.y, self.x+dx, board)
         elif (dy != 0):
             self.move(self.y+dy, self.x, board)
         
+class Finish(boardObj):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+    
+    def draw(self, screen, currentWidth, currentHeight, scale, size):
+        surface = pg.Surface((scale, scale))
+        surface.fill((0, 255, 0)) 
+        pg.draw.rect(surface, (0, 255, 0), (0, 0, scale, scale))
+        screen.blit(surface, self.calculateScreenPos(currentWidth, currentHeight, scale, size))
 
 
 # Obstacle nemy class which inherits from the Board Object Class
@@ -92,7 +103,13 @@ def loadlevel(data, size):
 
     return board
 
-    
+def finishfunc():
+    print("YOU WON")
+    pass
+
+def losefunc():
+    print("YOU LOSE")
+    pass
 
 # Game function 
 def gameLoop(screen, fps, fpsClock, data, size=10):
@@ -151,13 +168,19 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                         running = False
                             
                 # Functionality based on arrow movement
-                if (dy or dx) and board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
-                    mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
-                    newboard = [row.copy() for row in board]
-                    for a in newboard:
-                        for b in a:
-                            if isinstance(b, Enemy):
-                                b.aiMove(mainCharacter, board)
+                if (dy or dx):
+                    if isinstance(board[mainCharacter.y+dy][mainCharacter.x+dx], Finish):
+                        finishfunc()
+                    if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
+                        mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
+                        newboard = [row.copy() for row in board]
+                        for a in newboard:
+                            for b in a:
+                                if isinstance(b, Enemy):
+                                    b.aiMove(mainCharacter, board)
+                                    if (abs(b.x - mainCharacter.x) + abs(b.y - mainCharacter.y) <= 1):
+                                        losefunc()
+                                        running = False
             
 
         # Gets current height and width of the window and gets the standard scale for the board/grid
