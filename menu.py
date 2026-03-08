@@ -14,6 +14,7 @@ def main():
     height = int(info.current_h * (2/3))
 
     screen = pg.display.set_mode((width, height), pg.RESIZABLE)
+    pg.display.set_caption("Simple Math Game")
 
     # Load background once
     bg_img = pg.image.load("Assets/Menu.png")
