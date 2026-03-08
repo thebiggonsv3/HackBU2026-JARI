@@ -23,7 +23,6 @@ def levelMenu(fps, fpsClock, screen):
         rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 5.4))
         rect4 = text4.get_rect(topleft=(currentWidth // 2 - text4.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 7.2))
 
-        # ---- Dynamic menu box ----
         padding = 30
         box_left = min(rect1.left, rect2.left, rect3.left, rect4.left) - padding
         box_top = rect1.top - padding
