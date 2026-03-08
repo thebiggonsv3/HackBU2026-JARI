@@ -15,26 +15,51 @@ def main():
 
     screen = pg.display.set_mode((width, height), pg.RESIZABLE)
 
+    # Load background once
+    bg_img = pg.image.load("Assets/Menu.png")
 
     running = True
     hover = 0
+
     while running:
         currentHeight = screen.get_height()
         currentWidth = screen.get_width()
 
-        font = pg.font.Font("Assets/8_bit_maddness.ttf", int(currentHeight/20))
-        text1 = font.render(" START ", True, "black")
-        text2 = font.render(" HELP ", True, "black")
-        text3 = font.render(" QUIT ", True, "black")
-        
-        # Sets buttons to be in the middle of the screen
-        rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 1.8))
-        rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 3.6))
-        rect3 = text3.get_rect(topleft=(currentWidth // 2 - text3.get_width() // 2, ((currentHeight-200)/2)  + int(currentHeight/20) * 5.4))
+        font = pg.font.Font("Assets/Eight-Bit Madness.ttf", int(currentHeight/20))
+
+        text1 = font.render(" START ", True, "white")
+        text2 = font.render(" HELP ", True, "white")
+        text3 = font.render(" QUIT ", True, "white")
+
+        # Center buttons
+        rect1 = text1.get_rect(
+            topleft=(currentWidth // 2 - text1.get_width() // 2,
+            ((currentHeight-200)/2) + int(currentHeight/20) * 1.8))
+
+        rect2 = text2.get_rect(
+            topleft=(currentWidth // 2 - text2.get_width() // 2,
+            ((currentHeight-200)/2) + int(currentHeight/20) * 3.6))
+
+        rect3 = text3.get_rect(
+            topleft=(currentWidth // 2 - text3.get_width() // 2,
+            ((currentHeight-200)/2) + int(currentHeight/20) * 5.4))
+
+        padding = 30
+
+        box_left = min(rect1.left, rect2.left, rect3.left) - padding
+        box_top = rect1.top - padding
+        box_right = max(rect1.right, rect2.right, rect3.right) + padding
+        box_bottom = rect3.bottom + padding
+
+        box_width = box_right - box_left
+        box_height = box_bottom - box_top
+
+        menu_rect = pg.Rect(box_left, box_top, box_width, box_height)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+
             if event.type == pg.MOUSEMOTION:
                 if rect1.collidepoint(event.pos):
                     hover = 1
@@ -44,6 +69,7 @@ def main():
                     hover = 3
                 else:
                     hover = 0
+
             if event.type == pg.MOUSEBUTTONDOWN:
                 if rect1.collidepoint(event.pos):
                     hover = 4
@@ -55,45 +81,50 @@ def main():
             if event.type == pg.MOUSEBUTTONUP:
                 if rect1.collidepoint(event.pos):
                     levelMenu(fps, fpsClock, screen)
+
                 if rect2.collidepoint(event.pos):
                     pass
 
                 if rect3.collidepoint(event.pos):
                     running = False
 
-        screen.fill((255, 0, 0))
-        bg_img = pg.image.load("Assets/Menu.png")
+        # Draw background
         bg_scaled = pg.transform.scale(bg_img, (currentWidth, currentHeight))
         screen.blit(bg_scaled, (0, 0))
 
+        # ---- Draw semi-transparent menu box ----
+        menu_surface = pg.Surface((menu_rect.width, menu_rect.height), pg.SRCALPHA)
+        pg.draw.rect(menu_surface, (0, 0, 0, 140),
+                     (0, 0, menu_rect.width, menu_rect.height),
+                     border_radius=20)
+        screen.blit(menu_surface, menu_rect.topleft)
 
-        # Prints the buttons
+        # ---- Draw buttons ----
+
         if hover == 1:
-            pg.draw.rect(screen, (67,67,67,67), rect1, 0, 10)
+            pg.draw.rect(screen, (67,67,67), rect1, 0, 10)
         if hover == 4:
-            pg.draw.rect(screen, (45,45,45,45), rect1, 0, 10)
-        pg.draw.rect(screen, (255,0,0), rect1, 2, 10)
+            pg.draw.rect(screen, (45,45,45), rect1, 0, 10)
         screen.blit(text1, rect1)
 
         if hover == 2:
-            pg.draw.rect(screen, (67,67,67,67), rect2, 0, 10)
+            pg.draw.rect(screen, (67,67,67), rect2, 0, 10)
         if hover == 5:
-            pg.draw.rect(screen, (45,45,45,45), rect2, 0, 10)
+            pg.draw.rect(screen, (45,45,45), rect2, 0, 10)
         screen.blit(text2, rect2)
-        pg.draw.rect(screen, (255,0,0), rect2, 2, 10)
 
         if hover == 3:
-            pg.draw.rect(screen, (67,67,67,67), rect3, 0, 10)
+            pg.draw.rect(screen, (67,67,67), rect3, 0, 10)
         if hover == 6:
-            pg.draw.rect(screen, (45,45,45,45), rect3, 0, 10)
+            pg.draw.rect(screen, (45,45,45), rect3, 0, 10)
         screen.blit(text3, rect3)
-        pg.draw.rect(screen, (255,0,0), rect3, 2, 10)
 
         pg.display.flip()
         fpsClock.tick(fps)
 
     pg.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()
