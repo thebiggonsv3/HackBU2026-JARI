@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 pygame.init()
 import random
@@ -45,6 +46,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 if playeranswer == str(correct_answer):

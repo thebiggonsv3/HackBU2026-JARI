@@ -61,18 +61,52 @@ def levelMenu(fps, fpsClock, screen):
             if event.type == pg.MOUSEBUTTONUP:
 
                 if rect1.collidepoint(event.pos):
-                    data = [game.Character(5,5), game.Enemy(9,9)]
+                    # Easy: 1 enemy, a few obstacles, finish in corner
+                    data = [
+                        game.Character(5, 5),
+                        game.Enemy(9, 9),
+                        game.Obstacle(3, 3),
+                        game.Obstacle(6, 4),
+                        game.Obstacle(4, 7),
+                        game.Finish(9, 0),
+                    ]
                     game.gameLoop(screen, fps, fpsClock, data)
                     running = False
 
                 elif rect2.collidepoint(event.pos):
-                    data = [game.Character(5,5), game.Enemy(9,9), game.Enemy(0,0)]
+                    # Medium: 2 enemies, more obstacles, finish in corner
+                    data = [
+                        game.Character(5, 5),
+                        game.Enemy(9, 9),
+                        game.Enemy(0, 9),
+                        game.Obstacle(3, 3),
+                        game.Obstacle(6, 3),
+                        game.Obstacle(3, 6),
+                        game.Obstacle(6, 6),
+                        game.Obstacle(5, 1),
+                        game.Finish(9, 0),
+                    ]
                     game.gameLoop(screen, fps, fpsClock, data)
                     running = False
 
                 elif rect3.collidepoint(event.pos):
-                    data = [game.Character(5,5), game.Enemy(9,9), game.Enemy(0,0), game.Enemy(0,9), game.Obstacle(4,4), game.Finish(2,2)]
-                    game.gameLoop(screen, fps, fpsClock, data, 12)
+                    # Hard: 3 enemies, dense obstacles, finish tucked away
+                    data = [
+                        game.Character(5, 5),
+                        game.Enemy(9, 9),
+                        game.Enemy(0, 9),
+                        game.Enemy(9, 0),
+                        game.Obstacle(2, 2),
+                        game.Obstacle(4, 2),
+                        game.Obstacle(6, 2),
+                        game.Obstacle(2, 5),
+                        game.Obstacle(7, 5),
+                        game.Obstacle(2, 7),
+                        game.Obstacle(5, 7),
+                        game.Obstacle(7, 7),
+                        game.Finish(0, 0),
+                    ]
+                    game.gameLoop(screen, fps, fpsClock, data)
                     running = False
 
                 elif rect4.collidepoint(event.pos):

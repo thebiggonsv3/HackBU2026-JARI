@@ -70,10 +70,10 @@ class Finish(boardObj):
         super().__init__(x, y)
     
     def draw(self, screen, currentWidth, currentHeight, scale, size):
-        surface = pg.Surface((scale, scale))
-        surface.fill((0, 255, 0))
-        pg.draw.rect(surface, (0,255,0), (0,0,scale,scale))
-        screen.blit(surface, self.calculateScreenPos(currentWidth,currentHeight,scale,size))
+        x, y = self.calculateScreenPos(currentWidth, currentHeight, scale, size)
+        s = int(scale)
+        pg.draw.rect(screen, (0, 255, 0), (int(x), int(y), s, s))
+        pg.draw.rect(screen, (0, 180, 0), (int(x), int(y), s, s), 3)
 
 
 class Obstacle(boardObj):
@@ -82,10 +82,9 @@ class Obstacle(boardObj):
         super().__init__(x, y)
 
     def draw(self, screen, currentWidth, currentHeight, scale, size):
-        surface = pg.Surface((scale, scale))
-        surface.fill((255,255,255))
-        pg.draw.rect(surface,(255,255,255),(0,0,scale,scale))
-        screen.blit(surface, self.calculateScreenPos(currentWidth,currentHeight,scale,size))
+        x, y = self.calculateScreenPos(currentWidth, currentHeight, scale, size)
+        s = int(scale)
+        pg.draw.rect(screen, (255, 255, 255), (int(x), int(y), s, s))
 
 
 def loadlevel(data, size):
@@ -122,6 +121,12 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
 
     board = loadlevel(data, size)
 
+    # DEBUG - print board contents to console
+    print("=== BOARD LOADED ===")
+    for obj in data:
+        print(f"  {type(obj).__name__} at ({obj.x}, {obj.y})")
+    print("====================")
+
     mainCharacter = data[0]
 
     running = True
@@ -149,6 +154,13 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                                 if player_score == 5:
                                     level += 1
                                     player_score = 0
+                                for row in board:
+                                    for b in row:
+                                        if isinstance(b, Enemy):
+                                            b.aiMove(mainCharacter, board)
+                                            if (abs(b.x - mainCharacter.x) + abs(b.y - mainCharacter.y) <= 1):
+                                                wincon = 1
+                                                running = False
                         elif event.key == pg.K_BACKSPACE:
                                 player_answer = player_answer [:-1]
                         else:
@@ -197,7 +209,7 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                             wincon = 2
                             running = False
 
-                        if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
+                        elif board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
                             if level == 1:
                                 question_text, correct_answer = math_q.questions1()
                             elif level == 2:
@@ -207,19 +219,7 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                             pending_move = (dx, dy)
                             player_answer = ""
                             question_active = True
-                    
-                        newboard = [row.copy() for row in board]
 
-                        for a in newboard:
-                            for b in a:
-
-                                if isinstance(b, Enemy):
-
-                                    b.aiMove(mainCharacter, board)
-
-                                    if (abs(b.x-mainCharacter.x)+abs(b.y-mainCharacter.y)<=1):
-                                        wincon = 1
-                                        running = False
 
         currentHeight,currentWidth = screen.get_height(),screen.get_width()
         scale = screen.get_height()/(size*1.2)
@@ -312,7 +312,7 @@ def done(wincon,screen,fps,fpsClock,data,size):
 
                     if rect1.collidepoint(event.pos):
                         if wincon == 1:
-                            gameLoop(screen,fps,fpsClock,data,size)
+                            gameLoop(screen,fps,fpsClock,copy.deepcopy(data),size)
                         else:
                             nextlevel()
 
@@ -321,9 +321,12 @@ def done(wincon,screen,fps,fpsClock,data,size):
                         
 
 
-            screen.fill((255,0,0))
+            screen.fill((0,0,0))
 
-            bg_img = pg.image.load("Assets/end.png")
+            if wincon == 1:
+                bg_img = pg.image.load("Assets/end.png")
+            else:
+                bg_img = pg.image.load("Assets/win.png")
             bg_scaled = pg.transform.scale(bg_img,(currentWidth,currentHeight))
             screen.blit(bg_scaled,(0,0))
 

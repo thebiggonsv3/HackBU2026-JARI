@@ -8,6 +8,7 @@ def decision(a, b):
 def neighbors_get(node, board):
     x, y = node
     neighbors = []
+    size = len(board)
 
     directions = [(1,0), (-1,0), (0,1), (0,-1)]
 
@@ -15,15 +16,16 @@ def neighbors_get(node, board):
         nx = x + dx
         ny = y + dy
 
-        # 2 is wall, 3 is enemy, don't want to hit those
-        if 0 <= nx < 10 and 0 <= ny < 10:
-            if board[ny][nx] != 2 and board[ny][nx] != 3:
+        # 2 is wall, 3 is enemy, 4 is finish - don't want to hit those
+        if 0 <= nx < size and 0 <= ny < size:
+            if board[ny][nx] != 2 and board[ny][nx] != 3 and board[ny][nx] != 4:
                 neighbors.append((nx, ny))
     return neighbors
 
 def find_player(board):
-    for y in range(10):
-        for x in range(10):
+    size = len(board)
+    for y in range(size):
+        for x in range(size):
             if board[y][x] == 1:
                 return (x, y)
     return False

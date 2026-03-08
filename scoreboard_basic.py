@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -11,12 +12,13 @@ while True:
     
         if event.type == pygame.QUIT:
             pygame.quit()
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if progress1 < 20:
                 progress1 += 1
             if progress1 == 20:
-                progress1 = 0
                 Level1 += 1
+                progress1 = 0
 
 
     level_progress = f"Level: {Level1}/20"

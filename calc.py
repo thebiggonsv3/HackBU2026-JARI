@@ -13,7 +13,7 @@ def questions():
     coefficient = number1 * number2
     power = number2 - 1
 
-    if number2 and number1 > 1:
+    if number2 > 1 and number1 > 1:
         questiontext = "Derive " + str(number1) + "x^" + str(number2)
     elif number2 == 1 and number1 > 1:
         questiontext = "Derive " + str(number1) + "x"
@@ -58,6 +58,9 @@ while True:
                 
                 if event.key == pygame.K_6 and pygame.key.get_mods() & pygame.KMOD_SHIFT:
                     playeranswer += "^"
+                
+                if event.key == pygame.K_MINUS:
+                    playeranswer += "-"
 
             
     screen.fill("black")
