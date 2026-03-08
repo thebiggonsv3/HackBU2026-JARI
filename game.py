@@ -2,7 +2,6 @@ import pygame as pg
 import sys
 import ai
 
-
 # Board object which is the base class that all other board objects are based on
 class boardObj:
 
@@ -13,9 +12,9 @@ class boardObj:
         pass
 
     # Calculuates screen position from board coordanites
-    def calculateScreenPos(self, currentWidth, currentHeight, scale):
-        xpos = (scale*self.x)+((currentWidth-(scale*10)) / 2)
-        ypos = (scale*self.y)+((currentHeight-(scale*10))/2)
+    def calculateScreenPos(self, currentWidth, currentHeight, scale, size):
+        xpos = (scale*self.x)+((currentWidth-(scale*size)) / 2)
+        ypos = (scale*self.y)+((currentHeight-(scale*size))/2)
         return (xpos, ypos)
     
     # Moves Board object on the board
@@ -32,10 +31,10 @@ class Character(boardObj):
         super().__init__(x, y)
 
     # Draws character to screen using an image
-    def draw(self, screen, currentWidth, currentHeight, scale):
+    def draw(self, screen, currentWidth, currentHeight, scale, size):
         charImage = pg.image.load("Assets/Man.png")
         charImage = pg.transform.scale(charImage, (scale,scale))
-        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
+        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale, size))
 
 # Enemy class which inherits from the Board Object Class
 class Enemy(boardObj):
@@ -45,14 +44,14 @@ class Enemy(boardObj):
         super().__init__(x, y)
 
     # Draws Enemy to screen using an image
-    def draw(self, screen, currentWidth, currentHeight, scale):
+    def draw(self, screen, currentWidth, currentHeight, scale, size):
         charImage = pg.image.load("Assets/evil-man.png")
         charImage = pg.transform.scale(charImage, (scale,scale))
-        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
+        screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale, size))
 
     # Basic AI for Enemy (moves towards player based on relative x and y position)
     def aiMove(self, mainCharacter, board):
-        newboard = [[0 for a in range(10)] for b in range(10)]
+        newboard = [[0 for a in range(len(board))] for b in range(len(board))]
         for i, a in enumerate(board):
             for p, b in enumerate(a):
                 if isinstance(b, Character):
@@ -66,14 +65,6 @@ class Enemy(boardObj):
             self.move(self.y, self.x+dx, board)
         elif (dy != 0):
             self.move(self.y+dy, self.x, board)
-        '''if (mainCharacter.x < self.x) and  board[self.y][self.x-1] is None:
-            self.move(self.y, self.x-1, board)
-        elif (mainCharacter.x > self.x) and  board[self.y][self.x+1] is None:
-            self.move(self.y, self.x+1, board)
-        elif (mainCharacter.y < self.y) and  board[self.y-1][self.x] is None:
-            self.move(self.y-1, self.x, board)
-        elif (mainCharacter.y > self.y) and  board[self.y+1][self.x] is None:
-            self.move(self.y+1, self.x, board)'''
         
 
 
@@ -85,29 +76,16 @@ class Obstacle(boardObj):
         super().__init__(x, y)
 
     # Draws Obstacle to the screen by creating a rectangle
-    def draw(self, screen, currentWidth, currentHeight, scale):
+    def draw(self, screen, currentWidth, currentHeight, scale, size):
         surface = pg.Surface((scale, scale))
         surface.fill((255, 255, 255)) 
         pg.draw.rect(surface, (255, 255, 255), (0, 0, scale, scale))
-        screen.blit(surface, self.calculateScreenPos(currentWidth, currentHeight, scale))
+        screen.blit(surface, self.calculateScreenPos(currentWidth, currentHeight, scale, size))
 
 
-#Main Function for testing
-def main():
-    pg.init()
-
-    fps = 60
-    fpsClock = pg.time.Clock()
-    info = pg.display.Info()
-    width = int(info.current_w * (2/3))
-    height = int(info.current_h * (2/3))
-
-    screen = pg.display.set_mode((width, height), pg.RESIZABLE)
-    gameLoop(screen, fps, fpsClock)
-
-
-def loadlevel(data):
-    board = [[None for a in range(10)] for b in range(10)]
+# Reformats level data into board data
+def loadlevel(data, size):
+    board = [[None for a in range(size)] for b in range(size)]
 
     for obj in data:
         board[obj.y][obj.x] = obj
@@ -117,13 +95,13 @@ def loadlevel(data):
     
 
 # Game function 
-def gameLoop(screen, fps, fpsClock, data):
+def gameLoop(screen, fps, fpsClock, data, size=10):
 
     # Variable initialization
     framecount = 0
     font=pg.font.Font(None,20)
 
-    board = loadlevel(data)
+    board = loadlevel(data, size)
 
     # Initializes boardObjects to the board
     mainCharacter = data[0]
@@ -155,7 +133,7 @@ def gameLoop(screen, fps, fpsClock, data):
                     
                     # Right arrow detection
                     case pg.K_RIGHT | pg.K_d:
-                        if mainCharacter.x < 9:
+                        if mainCharacter.x < size-1:
                             dx = 1
 
                     # Up arrow detection
@@ -165,35 +143,37 @@ def gameLoop(screen, fps, fpsClock, data):
 
                     # Down arrow detection
                     case pg.K_DOWN | pg.K_s:
-                        if mainCharacter.y < 9:
+                        if mainCharacter.y < size-1:
                             dy = 1
+
+                    # Quit Functionality
+                    case pg.K_ESCAPE | pg.K_DELETE:
+                        running = False
                             
                 # Functionality based on arrow movement
-                if (dy != 0 or dx != 0):
-                    if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
-                        mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
-                        newboard = [row.copy() for row in board]
-                        for a in newboard:
-                            for b in a:
-                                if isinstance(b, Enemy):
-                                    b.aiMove(mainCharacter, board)
+                if (dy or dx) and board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
+                    mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
+                    newboard = [row.copy() for row in board]
+                    for a in newboard:
+                        for b in a:
+                            if isinstance(b, Enemy):
+                                b.aiMove(mainCharacter, board)
             
 
         # Gets current height and width of the window and gets the standard scale for the board/grid
-        currentHeight = screen.get_height()
-        currentWidth = screen.get_width()
-        scale = screen.get_height() / 12
+        currentHeight, currentWidth  = screen.get_height(), screen.get_width()
+        scale = screen.get_height() / (size * 1.2)
 
         # Draws grid lines to the screen
-        for i in range(11):
-            pg.draw.line(screen, (255, 255, 255), ((scale*i)+((currentWidth-(scale*10)) / 2), ((currentHeight-(scale*10))/2)), ((scale*i)+((currentWidth-(scale*10)) / 2), (scale*10) + ((currentHeight-(scale*10))/2)))
-            pg.draw.line(screen, (255, 255, 255), (((currentWidth-(scale*10)) / 2), (scale*i)+((currentHeight-(scale*10))/2)), ((scale*10)+((currentWidth-(scale*10)) / 2), (scale*i) + ((currentHeight-(scale*10))/2)))
+        for i in range(size+1):
+            pg.draw.line(screen, (255, 255, 255), ((scale*i)+((currentWidth-(scale*size)) / 2), ((currentHeight-(scale*size))/2)), ((scale*i)+((currentWidth-(scale*size)) / 2), (scale*size) + ((currentHeight-(scale*size))/2)))
+            pg.draw.line(screen, (255, 255, 255), (((currentWidth-(scale*size)) / 2), (scale*i)+((currentHeight-(scale*size))/2)), ((scale*size)+((currentWidth-(scale*size)) / 2), (scale*i) + ((currentHeight-(scale*size))/2)))
                 
         # Draws boardObjects to the board
         for objy in board:
             for objx in objy:
                 if objx is not None:
-                    objx.draw(screen, currentWidth, currentHeight, scale)
+                    objx.draw(screen, currentWidth, currentHeight, scale, size)
 
 
         #Draws frame counter and updates the screen
@@ -202,5 +182,3 @@ def gameLoop(screen, fps, fpsClock, data):
         fpsClock.tick(fps)
     pg.quit()
     sys.exit()
-if __name__ == "__main__":
-    main()
