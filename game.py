@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 import ai
+import copy
 
 # Board object which is the base class that all other board objects are based on
 class boardObj:
@@ -113,6 +114,7 @@ def losefunc():
 
 # Game function 
 def gameLoop(screen, fps, fpsClock, data, size=10):
+    origdata = copy.deepcopy(data)
 
     # Variable initialization
     framecount = 0
@@ -125,6 +127,7 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
 
     # main gameloop
     running = True
+    wincon = 0
     
     while running:
 
@@ -170,7 +173,8 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                 # Functionality based on arrow movement
                 if (dy or dx):
                     if isinstance(board[mainCharacter.y+dy][mainCharacter.x+dx], Finish):
-                        finishfunc()
+                        wincon = 2
+                        running = False
                     if board[mainCharacter.y+dy][mainCharacter.x+dx] is None:
                         mainCharacter.move(mainCharacter.y+dy, mainCharacter.x+dx, board)
                         newboard = [row.copy() for row in board]
@@ -179,7 +183,7 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
                                 if isinstance(b, Enemy):
                                     b.aiMove(mainCharacter, board)
                                     if (abs(b.x - mainCharacter.x) + abs(b.y - mainCharacter.y) <= 1):
-                                        losefunc()
+                                        wincon = 1
                                         running = False
             
 
@@ -203,5 +207,78 @@ def gameLoop(screen, fps, fpsClock, data, size=10):
         screen.blit(font.render(str(framecount),True,(255, 255, 255)),(0, 0))
         pg.display.flip()
         fpsClock.tick(fps)
-    pg.quit()
-    sys.exit()
+    done(wincon, screen, fps, fpsClock, origdata, size)
+def nextlevel():
+    pass
+def done(wincon, screen, fps, fpsClock, data, size):
+    if (wincon == 0):
+        pg.quit()
+        sys.exit()
+    else:
+        running2 = True
+        hover = 0
+        while running2:
+            currentHeight = screen.get_height()
+            currentWidth = screen.get_width()
+
+            font = pg.font.SysFont("Arial", int(currentHeight/20))
+            if (wincon == 1):
+                text1 = font.render(" Retry? ", True, "white")
+            else:
+                text1 = font.render(" Next Level? ", True, "white")
+            text2 = font.render(" Return to Menu ", True, "white")
+
+            rect1 = text1.get_rect(topleft=(currentWidth // 2 - text1.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 1.8))
+            rect2 = text2.get_rect(topleft=(currentWidth // 2 - text2.get_width() // 2, ((currentHeight-200)/2) + int(currentHeight/20) * 3.6))
+            
+            for event in pg.event.get():
+
+                if event.type == pg.QUIT:
+                    running2 = False
+
+                if event.type == pg.MOUSEMOTION:
+                    if rect1.collidepoint(event.pos):
+                        hover = 1
+                    elif rect2.collidepoint(event.pos):
+                        hover = 2
+                    else:
+                        hover = 0
+
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    if rect1.collidepoint(event.pos):
+                        hover = 3
+                    elif rect2.collidepoint(event.pos):
+                        hover = 4
+
+                if event.type == pg.MOUSEBUTTONUP:
+
+                    if rect1.collidepoint(event.pos):
+                        if (wincon == 1):
+                            gameLoop(screen, fps, fpsClock, data, size)
+                        else:
+                            nextlevel()
+                    elif rect2.collidepoint(event.pos):
+                        running2 = False
+
+            screen.fill((255, 0, 0))
+            bg_img = pg.image.load("Assets/Menu.png")
+            bg_scaled = pg.transform.scale(bg_img, (currentWidth, currentHeight))
+            screen.blit(bg_scaled, (0, 0))
+
+            if hover == 1:
+                pg.draw.rect(screen, (67,67,67,67), rect1, 0, 10)
+            if hover == 3:
+                pg.draw.rect(screen, (45,45,45,45), rect1, 0, 10)
+            pg.draw.rect(screen, (255,0,0), rect1, 2, 10)
+            screen.blit(text1, rect1)
+
+            if hover == 2:
+                pg.draw.rect(screen, (67,67,67,67), rect2, 0, 10)
+            if hover == 4:
+                pg.draw.rect(screen, (45,45,45,45), rect2, 0, 10)
+            screen.blit(text2, rect2)
+            pg.draw.rect(screen, (255,0,0), rect2, 2, 10)
+
+
+            pg.display.flip()
+            fpsClock.tick(fps)
