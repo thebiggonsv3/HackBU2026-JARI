@@ -1,5 +1,6 @@
 import heapq
 
+# Manhattan distance (abs between two points)
 def decision(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
@@ -14,6 +15,7 @@ def neighbors_get(node, board):
         nx = x + dx
         ny = y + dy
 
+        # 2 is wall, 3 is enemy, don't want to hit those
         if 0 <= nx < 10 and 0 <= ny < 10:
             if board[ny][nx] != 2 and board[ny][nx] != 3:
                 neighbors.append((nx, ny))
@@ -26,6 +28,7 @@ def find_player(board):
                 return (x, y)
     return False
 
+# Runs the math to check which one gets the closest to the player
 def ai(board, x_start, y_start):
     start = (x_start, y_start)
     goal = find_player(board)
