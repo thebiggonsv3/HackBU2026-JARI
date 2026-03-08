@@ -269,7 +269,7 @@ def done(wincon,screen,fps,fpsClock,data,size):
 
             screen.fill((255,0,0))
 
-            bg_img = pg.image.load("Assets/Menu.png")
+            bg_img = pg.image.load("Assets/end.png")
             bg_scaled = pg.transform.scale(bg_img,(currentWidth,currentHeight))
             screen.blit(bg_scaled,(0,0))
 
