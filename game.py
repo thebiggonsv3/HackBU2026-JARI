@@ -54,7 +54,7 @@ class Enemy(boardObj):
     def aiMove(self, mainCharacter, board):
         newboard = [[0 for a in range(10)] for b in range(10)]
         for i, a in enumerate(board):
-            for p, b in a:
+            for p, b in enumerate(a):
                 if isinstance(b, Character):
                     newboard[i][p] = 1
                 elif isinstance(b, Obstacle):
