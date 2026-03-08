@@ -46,7 +46,7 @@ class Enemy(boardObj):
 
     # Draws Enemy to screen using an image
     def draw(self, screen, currentWidth, currentHeight, scale):
-        charImage = pg.image.load("Assets/evil-test.png")
+        charImage = pg.image.load("Assets/evil-man.png")
         charImage = pg.transform.scale(charImage, (scale,scale))
         screen.blit(charImage, self.calculateScreenPos(currentWidth, currentHeight, scale))
 
