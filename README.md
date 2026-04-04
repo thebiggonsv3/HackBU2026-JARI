@@ -1,7 +1,6 @@
 Simple Math Game
 ----------------------------------------------------------------
 HackBU 2026 Submission 
-Created by Ian Porto, Ryan Zhang, Alston Zhang, and Jason Seng
 
 IMPORTANT
 ----------------------------------------------------------------
